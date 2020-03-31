@@ -21,7 +21,7 @@
     "joi": "^14.3.1",
     "js-yaml": "^3.13.1",
     "mongodb": "^3.2.3",
-    "mongoose": "^5.5.4",
+    "mongoose": "^5.7.5",
     "mongoose-sequence": "^5.0.1",
     "swagger-tools": "^0.10.4"
   }
