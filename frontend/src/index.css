@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.check_order_status_div{
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding: 10px;
+}
+
+.check_order_status_div p{
+  margin: 4px !important;
+  font-weight: bold;
+}
+
+#show_order_status > p > b{
+  font-size: 40px;
+}
+
+.hidden { display:none; }
+
+
+.new_order_status_div{
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding: 10px;
+}
+
+.new_order_status_div p{
+  margin: 4px !important;
+  font-weight: bold;
+}
+
+#show_order_id > p > b{
+  font-size: 20px;
+}
+
+div.sandwitch_order > div > table > thead > tr > th{
+  text-align: center;
+}

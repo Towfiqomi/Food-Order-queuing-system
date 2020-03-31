@@ -1,0 +1,458 @@
+---
+swagger: "2.0"
+info:
+  description: "This is the Swagger 2.0 API for Web Architectures course group project\
+    \ work.\n"
+  version: "1.1.0"
+  title: "Make me a sandwich"
+  contact:
+    email: "mikko.nurminen@tuni.fi"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost"
+basePath: "/v1"
+tags:
+- name: "order"
+  description: "Sandwich orders"
+- name: "sandwich"
+  description: "NOT MANDATORY TO IMPLEMENT!\nTypes of sandwich that users can order-\
+    \ CRUD\n"
+- name: "user"
+  description: "NOT MANDATORY TO IMPLEMENT!\nUser management\n"
+schemes:
+- "http"
+paths:
+  /order:
+    get:
+      tags:
+      - "order"
+      summary: "Get a list of all orders. Empty array if no orders are found."
+      operationId: "getOrders"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ArrayOfOrders"
+      x-swagger-router-controller: "Order"
+    post:
+      tags:
+      - "order"
+      summary: "Add an order for an sandwich"
+      operationId: "addOrder"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "order"
+        description: "place an order for a sandwich"
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Order"
+        400:
+          description: "Order not created"
+      x-swagger-router-controller: "Order"
+  /order/{orderId}:
+    get:
+      tags:
+      - "order"
+      summary: "Find an order by its ID"
+      description: "IDs must be positive integers"
+      operationId: "getOrderById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "orderId"
+        in: "path"
+        description: "ID of sandwich that needs to be fetched"
+        required: true
+        type: "integer"
+        minimum: 1
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Order"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Order not found"
+      x-swagger-router-controller: "Order"
+  /sandwich:
+    get:
+      tags:
+      - "sandwich"
+      summary: "Get a list of all sandwiches. Empty array if no sandwiches are found."
+      operationId: "getSandwiches"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ArrayOfSandwiches"
+      x-swagger-router-controller: "Sandwich"
+    post:
+      tags:
+      - "sandwich"
+      summary: "Add a new sandwich to the store. Needs an API key."
+      operationId: "addSandwich"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Sandwich object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Sandwich"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Sandwich"
+  /sandwich/{sandwichId}:
+    get:
+      tags:
+      - "sandwich"
+      summary: "Find sandwich by ID"
+      description: "Returns a single sandwich"
+      operationId: "getSandwichById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "sandwichId"
+        in: "path"
+        description: "ID of sandwich to return"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Sandwich"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Sandwich not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Sandwich"
+    post:
+      tags:
+      - "sandwich"
+      summary: "Updates a sandwich in the store with JSON in body"
+      operationId: "updateSandwich"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "sandwichId"
+        in: "path"
+        description: "ID of sandwich to return"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Sandwich object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Sandwich"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Sandwich"
+    delete:
+      tags:
+      - "sandwich"
+      summary: "Deletes a sandwich"
+      operationId: "deleteSandwich"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "sandwichId"
+        in: "path"
+        description: "Sandwich id to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Sandwich not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Sandwich"
+  /user:
+    post:
+      tags:
+      - "user"
+      summary: "Create user"
+      description: "This can only be done by the logged in user."
+      operationId: "createUser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        default:
+          description: "successful operation"
+      x-swagger-router-controller: "User"
+  /user/login:
+    post:
+      tags:
+      - "user"
+      summary: "Logs user into the system"
+      operationId: "loginUser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "The user for login"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+          schema:
+            type: "string"
+        400:
+          description: "Invalid username/password supplied"
+      x-swagger-router-controller: "User"
+  /user/logout:
+    post:
+      tags:
+      - "user"
+      summary: "Logs out current logged in user session"
+      operationId: "logoutUser"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+      x-swagger-router-controller: "User"
+  /user/{username}:
+    get:
+      tags:
+      - "user"
+      summary: "Get user by user name"
+      operationId: "getUserByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The name that needs to be fetched. Use user1 for testing."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "User"
+    put:
+      tags:
+      - "user"
+      summary: "Updated user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        400:
+          description: "Invalid user supplied"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "User"
+    delete:
+      tags:
+      - "user"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "User"
+securityDefinitions:
+  sandwichestore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://sandwichestore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:sandwiches: "modify sandwiches in your account"
+      read:sandwiches: "read your sandwiches"
+  api_key:
+    type: "apiKey"
+    name: "X-API-KEY"
+    in: "header"
+definitions:
+  Order:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      sandwichId:
+        type: "integer"
+        format: "int64"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "received"
+        - "inQueue"
+        - "ready"
+        - "failed"
+    xml:
+      name: "Order"
+    example:
+      sandwichId: 6
+      id: 0
+      status: "received"
+  ArrayOfOrders:
+    type: "array"
+    items:
+      $ref: "#/definitions/Order"
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      username:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+    xml:
+      name: "User"
+    example:
+      password: "password"
+      id: 0
+      email: "email"
+      username: "username"
+  Topping:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+    xml:
+      name: "Tag"
+    example:
+      name: "name"
+      id: 6
+  Sandwich:
+    type: "object"
+    required:
+    - "breadType"
+    - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "my-super-sandwich"
+      toppings:
+        type: "array"
+        xml:
+          name: "toppings"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Topping"
+      breadType:
+        type: "string"
+        description: "bread used in the sandwich"
+        enum:
+        - "oat"
+        - "rye"
+        - "wheat"
+    xml:
+      name: "Sandwich"
+    example:
+      name: "my-super-sandwich"
+      toppings:
+      - name: "name"
+        id: 6
+      - name: "name"
+        id: 6
+      id: 0
+      breadType: "oat"
+  ArrayOfSandwiches:
+    type: "array"
+    items:
+      $ref: "#/definitions/Sandwich"
