@@ -1,51 +1,19 @@
-# This is the docker-compose-yml file that must be able to start
-# your group's backend.
-
-# Remember to comment this file well!
-
-# After you have Docker and Docker Compose installed,
-# and this file is ready, you use this file and run it with:
-# `docker-compose up --build`
-
 version: "3"
 
 services:
-  # An example configuration of server A for groups' convenience.
-  # server-a is based on the Docker image the groups produce and build themselves.
   server-a:
-    # Change the image information to match your server A image
     build:
       dockerfile: Dockerfile
       context: ./backend/server-a
     image: "group4/node:10"
-    #user: "group004/node:10"
-    # $USERNAME/$IMAGENAME:$TAG, something like group000/node-swagger:3a
-    # 'depends_on' and 'command' are  to be used when used
-    # with RabbitMQ service in this file. 'depends_on' must be set
-    # to RabbitMQ service's name from this file, and 'command'
-    # can be modified to be anything, but what is given should
-    # work. Just uncomment them
     depends_on:
        -  rapid-runner-rabbit
        -  database
     command: ["./utils/wait-for-it.sh", "rapid-runner-rabbit:5672", "--",  "npm", "start"]
-    #command: [ "npm", "start"]
-    # Here we map the port 8080 of the container to the
-    # port 12345 of the host. Container port has been exposed
-    # in the node:10 Docker Hub Dockerfile.
     ports:
       - "8080:8080"
     networks:
       - backend
-
-  # You can base this service on the rabbitmq:3-management Docker Hub image.
-  # You need to expose the RabbitMQ port 5672 to other containers
-  # in this  docker-compose.yml, and for the managent from a Web
-  # server you needs to make the map the RabbitMQ container port
-  # 15672 to host port you wish to use for this.
-  # A set of needed Docker instructions like 'image:' are shown
-  # below, groups should set their values. Groups are free to
-  # CRUD the set of instructions as they see fit.
   rapid-runner-rabbit:
      image: rabbitmq:3-management
      hostname: "rapid-runner-rabbit"
@@ -59,13 +27,7 @@ services:
        - 15672
      networks:
        - backend
-
-  # much of the server-b service entry can be copied from server-a
-  # service above. server-b directory Dockerfile has more
-  # information.
-  # A set of needed Docker instructions like 'image:' are shown
-  # below, groups should set their values. Groups are free to
-  # CRUD this set of instructions as they see fit.
+       
   server-b:
     # Change the image information to match your server A image
     build:
@@ -76,20 +38,11 @@ services:
       -  rapid-runner-rabbit
       -  database
     command: ["./utils/wait-for-it.sh", "rapid-runner-rabbit:5672", "--",  "npm", "start"]
-    # Here we map the port 8080 of the container to the
-    # port 12345 of the host. Container port has been exposed
-    # in the node:10 Docker Hub Dockerfile.
     ports:
       - "8082:8082"
     networks:
       - backend
 
-  # Your group might want to use a database to store some data
-  # You can use any database you wish, PostgreSQL, MySQL and
-  # MongoDB have rather good Docker documentation and examples.
-  # But some groups could find a way to do this without
-  # databases (but I could not :-) )
-  # database-service would go here.
   database:
     image: mongo:latest
     restart: always
@@ -102,16 +55,8 @@ services:
     networks:
       - backend
 
-# Here we create a named network, that all the backend components
-# must be added to for them to be able to communicate through
-# exposed ports.
 networks:
   backend:
 
-# If you use databases for storing information, you can define
-# their volumes here.
-# Documentation: https://docs.docker.com/storage/volumes/
-# Personally I like to look at the database's image's Dockerfile
-# in the Docker Hub to see what directory it uses to store data.
 volumes:
   db_data: {}
